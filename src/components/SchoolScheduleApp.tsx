@@ -1,5 +1,5 @@
-// SchoolScheduleApp.tsx
 import React, { useState, useReducer } from 'react';
+import { Routes, Route, useNavigate, Link } from 'react-router-dom'; // Import Link
 import DayHeader from './DayHeader';
 import LessonForm from './LessonForm';
 import LessonList from './LessonList';
@@ -58,18 +58,22 @@ const SchoolScheduleApp: React.FC<SchoolScheduleAppProps> = ({ teachers }) => {
         { day: 'Pi¹tek', lessons: [] }
     ]);
 
-    const [selectedDay, setSelectedDay] = useState<string>('Poniedzia³ek');
+    const [selectedDay] = useState<string>('Poniedzia³ek');
     const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+
+    const navigate = useNavigate();  // Hook do nawigacji
 
     const handleAddLesson = (lesson: Lesson) => {
         dispatch({
             type: 'ADD_LESSON',
             payload: { day: selectedDay, lesson }
         });
+        navigate(`/day/${selectedDay}`);  // Nawigacja po dodaniu lekcji
     };
 
     const handleEditLesson = (lesson: Lesson) => {
         setSelectedLesson(lesson);
+        navigate(`/edit-lesson/${lesson.id}`);  // Nawigacja do edytowania lekcji
     };
 
     const handleUpdateLesson = (updatedLesson: Lesson) => {
@@ -77,7 +81,8 @@ const SchoolScheduleApp: React.FC<SchoolScheduleAppProps> = ({ teachers }) => {
             type: 'UPDATE_LESSON',
             payload: { day: selectedDay, lesson: updatedLesson }
         });
-        setSelectedLesson(null); // Close the form after updating
+        setSelectedLesson(null); // Zamkniêcie formularza po edycji
+        navigate(`/day/${selectedDay}`);  // Powrót do widoku dnia
     };
 
     const handleDeleteLesson = (lessonId: number) => {
@@ -87,10 +92,7 @@ const SchoolScheduleApp: React.FC<SchoolScheduleAppProps> = ({ teachers }) => {
         });
     };
 
-    const handleDayChange = (day: string) => {
-        setSelectedDay(day);
-        setSelectedLesson(null); // Reset selected lesson when switching days
-    };
+    
 
     return (
         <div>
@@ -107,32 +109,64 @@ const SchoolScheduleApp: React.FC<SchoolScheduleAppProps> = ({ teachers }) => {
                 ))}
             </div>
 
-            {/* Wybór dnia tygodnia */}
+            {/* Linki do przejœcia do poszczególnych dni */}
             <div>
                 {state.map(day => (
-                    <button key={day.day} onClick={() => handleDayChange(day.day)}>
+                    <Link key={day.day} to={`/day/${day.day}`} style={{ margin: '0 10px' }}>
                         {day.day}
-                    </button>
+                    </Link>
                 ))}
             </div>
 
-            {/* Formularz do dodawania lekcji lub edytowania istniej¹cej */}
-            {selectedLesson ? (
-                <LessonForm
-                    onSubmit={handleUpdateLesson}
-                    teachers={teachers}
-                    lesson={selectedLesson}
-                />
-            ) : (
-                <LessonForm onSubmit={handleAddLesson} teachers={teachers} />
-            )}
+            {/* Poni¿ej dodajemy link do formularza lekcji */}
+            <div style={{ marginTop: '20px' }}>
+                <Link to="/add-lesson" style={{ margin: '10px', padding: '10px', background: '#4CAF50', color: '#fff', textDecoration: 'none' }}>
+                    Dodaj now¹ lekcjê
+                </Link>
+            </div>
 
-            {/* Lista lekcji dla wybranego dnia */}
-            <LessonList
-                lessons={state.find(day => day.day === selectedDay)?.lessons || []}
-                onEdit={handleEditLesson}
-                onDelete={handleDeleteLesson}
-            />
+            {/* Routing dla poszczególnych dni */}
+            <Routes>
+                {state.map(day => (
+                    <Route
+                        key={day.day}
+                        path={`/day/${day.day}`}
+                        element={
+                            <div>
+                                <h2>{day.day}</h2>
+                                {/* Lista lekcji dla wybranego dnia */}
+                                <LessonList
+                                    lessons={day.lessons}
+                                    onEdit={handleEditLesson}
+                                    onDelete={handleDeleteLesson}
+                                />
+                            </div>
+                        }
+                    />
+                ))}
+
+                {/* Routing do formularza edycji lekcji */}
+                <Route
+                    path="/edit-lesson/:lessonId"
+                    element={
+                        selectedLesson ? (
+                            <LessonForm
+                                onSubmit={handleUpdateLesson}
+                                teachers={teachers}
+                                lesson={selectedLesson}
+                            />
+                        ) : (
+                            <div>£adowanie lekcji...</div>
+                        )
+                    }
+                />
+
+                {/* Routing do formularza dodawania lekcji */}
+                <Route
+                    path="/add-lesson"
+                    element={<LessonForm onSubmit={handleAddLesson} teachers={teachers} />}
+                />
+            </Routes>
         </div>
     );
 };

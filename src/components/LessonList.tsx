@@ -8,17 +8,14 @@ type LessonListProps = {
 };
 
 const LessonList: React.FC<LessonListProps> = ({ lessons, onEdit, onDelete }) => {
-    const [sortMethod, setSortMethod] = useState<'subject' | 'time'>('subject'); // Default sort by subject
+    const [sortMethod, setSortMethod] = useState<'subject' | 'time'>('subject');
 
-    // Sort lessons based on the selected method
     const sortedLessons = [...lessons].sort((a, b) => {
         if (sortMethod === 'subject') {
-            // Sorting alphabetically by subject
             if (a.subject < b.subject) return -1;
             if (a.subject > b.subject) return 1;
             return 0;
         } else if (sortMethod === 'time') {
-            // Sorting by start time (chronologically)
             return a.startTime.localeCompare(b.startTime);
         }
         return 0;
@@ -27,8 +24,6 @@ const LessonList: React.FC<LessonListProps> = ({ lessons, onEdit, onDelete }) =>
     return (
         <div>
             <h2>Lista Lekcji</h2>
-
-            {/* Sort by dropdown */}
             <div>
                 <label>Sortuj wed³ug: </label>
                 <select value={sortMethod} onChange={(e) => setSortMethod(e.target.value as 'subject' | 'time')}>

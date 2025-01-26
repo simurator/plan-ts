@@ -1,31 +1,21 @@
 import React, { useState } from 'react';
-import SchoolScheduleApp from './components/SchoolScheduleApp';
-import { Teacher } from './components/Models';
+import { BrowserRouter } from 'react-router-dom';
+import SchoolScheduleApp from './components/SchoolScheduleApp';  // Import komponentu Plan Lekcji
+import { Teacher } from './components/Models';  // Import interfejsu nauczyciela
 
 const App: React.FC = () => {
-    
-
+    // Stwórz przyk³adowych nauczycieli
     const [teachers] = useState<Teacher[]>([
-        {
-            id: 1,
-            firstName: 'Jan',
-            lastName: 'Kowalski',
-            // Removing department, subjects, and other fields since the Teacher type now only has id, firstName, and lastName
-        },
-        {
-            id: 2,
-            firstName: 'Anna',
-            lastName: 'Nowak',
-            // Removing department, subjects, and other fields
-        }
+        { id: 1, firstName: 'Jan', lastName: 'Kowalski' },
+        { id: 2, firstName: 'Anna', lastName: 'Nowak' },
     ]);
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">Plan Lekcji Szkoly</h1>
-            {/* Passing the teachers array to the SchoolScheduleApp */}
+        // Router dla ca³ej aplikacji
+        <BrowserRouter>
+            {/* Przekazujemy nauczycieli do SchoolScheduleApp */}
             <SchoolScheduleApp teachers={teachers} />
-        </div>
+        </BrowserRouter>
     );
 };
 
