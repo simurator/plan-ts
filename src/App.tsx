@@ -1,22 +1,24 @@
-import React, { useState } from 'react';
-import { BrowserRouter } from 'react-router-dom';
-import SchoolScheduleApp from './components/SchoolScheduleApp';  // Import komponentu Plan Lekcji
-import { Teacher } from './components/Models';  // Import interfejsu nauczyciela
+import { BrowserRouter as Router } from 'react-router-dom';
+import React  from 'react';
+import {  SchoolDay } from './components/Models';
+import SchoolScheduleApp from './components/SchoolScheduleApp';
 
-const App: React.FC = () => {
-    // Stwórz przyk³adowych nauczycieli
-    const [teachers] = useState<Teacher[]>([
-        { id: 1, firstName: 'Jan', lastName: 'Kowalski' },
-        { id: 2, firstName: 'Anna', lastName: 'Nowak' },
-    ]);
+const initialState: SchoolDay[] = [
+    { day: 'Monday', lessons: [{ id: 1, subject: 'Math', teacher: { id: 1, firstName: 'Jan', lastName: 'Kowalski' }, startTime: '08:00', endTime: '09:30', classroom: '101' }] },
+    { day: 'Tuesday', lessons: [] },
+    { day: 'Wednesday', lessons: [] },
+    { day: 'Thursday', lessons: [] },
+    { day: 'Friday', lessons: [] }
+];
 
+function App() {
     return (
-        // Router dla ca³ej aplikacji
-        <BrowserRouter>
-            {/* Przekazujemy nauczycieli do SchoolScheduleApp */}
-            <SchoolScheduleApp teachers={teachers} />
-        </BrowserRouter>
+        <Router>
+            <div style={{ fontFamily: 'Arial, sans-serif', padding: '20px' }}>
+                <SchoolScheduleApp initialState={initialState} />
+            </div>
+        </Router>
     );
-};
+}
 
 export default App;

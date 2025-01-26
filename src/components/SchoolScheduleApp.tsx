@@ -1,132 +1,84 @@
-import React, { useState, useReducer } from 'react';
-import { Routes, Route, useNavigate, Link } from 'react-router-dom'; // Import Link
-import DayHeader from './DayHeader';
+import { useState } from 'react';
+import { Lesson, SchoolDay } from './Models';
+import { useNavigate, Routes, Route } from 'react-router-dom';
 import LessonForm from './LessonForm';
 import LessonList from './LessonList';
-import { Lesson, Teacher, SchoolDay } from './Models';
 
-type SchoolScheduleAppProps = {
-    teachers: Teacher[];
-};
+const initialState: SchoolDay[] = [
+    { day: 'Monday', lessons: [] },
+    { day: 'Tuesday', lessons: [] },
+    { day: 'Wednesday', lessons: [] },
+    { day: 'Thursday', lessons: [] },
+    { day: 'Friday', lessons: [] }
+];
 
-type ScheduleAction =
-    | { type: 'ADD_LESSON'; payload: { day: string; lesson: Lesson } }
-    | { type: 'UPDATE_LESSON'; payload: { day: string; lesson: Lesson } }
-    | { type: 'DELETE_LESSON'; payload: { day: string; lessonId: number } };
+const SchoolScheduleApp: React.FC = () => {
+    const [state, setState] = useState<SchoolDay[]>(initialState);
+    const navigate = useNavigate();
 
-const scheduleReducer = (state: SchoolDay[], action: ScheduleAction): SchoolDay[] => {
-    switch (action.type) {
-        case 'ADD_LESSON':
-            return state.map(day =>
-                day.day === action.payload.day
-                    ? { ...day, lessons: [...day.lessons, action.payload.lesson] }
-                    : day
-            );
-        case 'UPDATE_LESSON':
-            return state.map(day =>
-                day.day === action.payload.day
+    const handleAddLesson = (newLesson: Lesson, day: string) => {
+        setState(prevState =>
+            prevState.map(d =>
+                d.day === day ? { ...d, lessons: [...d.lessons, newLesson] } : d
+            )
+        );
+        navigate(`/day/${day}`);
+    };
+
+    const handleEditLesson = (day: string, updatedLesson: Lesson) => {
+        setState(prevState =>
+            prevState.map(d =>
+                d.day === day
                     ? {
-                        ...day,
-                        lessons: day.lessons.map(lesson =>
-                            lesson.id === action.payload.lesson.id
-                                ? action.payload.lesson
-                                : lesson
+                        ...d,
+                        lessons: d.lessons.map(lesson =>
+                            lesson.id === updatedLesson.id ? updatedLesson : lesson
                         )
                     }
-                    : day
-            );
-        case 'DELETE_LESSON':
-            return state.map(day =>
-                day.day === action.payload.day
+                    : d
+            )
+        );
+        navigate(`/day/${day}`);
+    };
+
+    const handleDeleteLesson = (day: string, lessonId: number) => {
+        setState(prevState =>
+            prevState.map(d =>
+                d.day === day
                     ? {
-                        ...day,
-                        lessons: day.lessons.filter(lesson => lesson.id !== action.payload.lessonId)
+                        ...d,
+                        lessons: d.lessons.filter(lesson => lesson.id !== lessonId)
                     }
-                    : day
-            );
-        default:
-            return state;
-    }
-};
-
-const SchoolScheduleApp: React.FC<SchoolScheduleAppProps> = ({ teachers }) => {
-    const [state, dispatch] = useReducer(scheduleReducer, [
-        { day: 'Poniedzia³ek', lessons: [] },
-        { day: 'Wtorek', lessons: [] },
-        { day: 'Œroda', lessons: [] },
-        { day: 'Czwartek', lessons: [] },
-        { day: 'Pi¹tek', lessons: [] }
-    ]);
-
-    const [selectedDay] = useState<string>('Poniedzia³ek');
-    const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
-
-    const navigate = useNavigate();  // Hook do nawigacji
-
-    const handleAddLesson = (lesson: Lesson) => {
-        dispatch({
-            type: 'ADD_LESSON',
-            payload: { day: selectedDay, lesson }
-        });
-        navigate(`/day/${selectedDay}`);  // Nawigacja po dodaniu lekcji
+                    : d
+            )
+        );
     };
-
-    const handleEditLesson = (lesson: Lesson) => {
-        setSelectedLesson(lesson);
-        navigate(`/edit-lesson/${lesson.id}`);  // Nawigacja do edytowania lekcji
-    };
-
-    const handleUpdateLesson = (updatedLesson: Lesson) => {
-        dispatch({
-            type: 'UPDATE_LESSON',
-            payload: { day: selectedDay, lesson: updatedLesson }
-        });
-        setSelectedLesson(null); // Zamkniêcie formularza po edycji
-        navigate(`/day/${selectedDay}`);  // Powrót do widoku dnia
-    };
-
-    const handleDeleteLesson = (lessonId: number) => {
-        dispatch({
-            type: 'DELETE_LESSON',
-            payload: { day: selectedDay, lessonId }
-        });
-    };
-
-    
 
     return (
         <div>
             <h1>Plan Lekcji</h1>
-
-            {/* Wyœwietlenie dni tygodnia */}
-            <div>
-                {state.map(day => (
-                    <DayHeader
-                        key={day.day}
-                        day={day.day}
-                        lessonCount={day.lessons.length}
-                    />
-                ))}
-            </div>
-
-            {/* Linki do przejœcia do poszczególnych dni */}
-            <div>
-                {state.map(day => (
-                    <Link key={day.day} to={`/day/${day.day}`} style={{ margin: '0 10px' }}>
-                        {day.day}
-                    </Link>
-                ))}
-            </div>
-
-            {/* Poni¿ej dodajemy link do formularza lekcji */}
-            <div style={{ marginTop: '20px' }}>
-                <Link to="/add-lesson" style={{ margin: '10px', padding: '10px', background: '#4CAF50', color: '#fff', textDecoration: 'none' }}>
-                    Dodaj now¹ lekcjê
-                </Link>
-            </div>
-
-            {/* Routing dla poszczególnych dni */}
             <Routes>
+                {/* Strona g³ówna - lista dni */}
+                <Route
+                    path="/"
+                    element={
+                        <div>
+                            {state.map(day => (
+                                <div key={day.day}>
+                                    <h2>{day.day}</h2>
+                                    <button onClick={() => navigate(`/day/${day.day}`)}>
+                                        Poka¿ Lekcje
+                                    </button>
+                                    <button onClick={() => navigate(`/add-lesson/${day.day}`)}>
+                                        Dodaj Lekcjê
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    }
+                />
+
+                {/* Widok dla ka¿dego dnia */}
                 {state.map(day => (
                     <Route
                         key={day.day}
@@ -134,37 +86,53 @@ const SchoolScheduleApp: React.FC<SchoolScheduleAppProps> = ({ teachers }) => {
                         element={
                             <div>
                                 <h2>{day.day}</h2>
-                                {/* Lista lekcji dla wybranego dnia */}
                                 <LessonList
                                     lessons={day.lessons}
-                                    onEdit={handleEditLesson}
-                                    onDelete={handleDeleteLesson}
+                                    onEdit={(lesson) => navigate(`/edit-lesson/${day.day}/${lesson.id}`)}
+                                    onDelete={(lessonId) => handleDeleteLesson(day.day, lessonId)}
                                 />
+                                <button onClick={() => navigate(`/add-lesson/${day.day}`)}>
+                                    Dodaj Lekcjê
+                                </button>
+                                <button onClick={() => navigate('/')}>
+                                    Powrót do planu
+                                </button>
                             </div>
                         }
                     />
                 ))}
 
-                {/* Routing do formularza edycji lekcji */}
+                {/* Formularz dodawania lekcji */}
                 <Route
-                    path="/edit-lesson/:lessonId"
+                    path="/add-lesson/:day"
                     element={
-                        selectedLesson ? (
-                            <LessonForm
-                                onSubmit={handleUpdateLesson}
-                                teachers={teachers}
-                                lesson={selectedLesson}
-                            />
-                        ) : (
-                            <div>£adowanie lekcji...</div>
-                        )
+                        <LessonForm
+                            onSubmit={(lesson) => {
+                                const day = window.location.pathname.split('/')[2]; // Dzieñ z URL
+                                handleAddLesson(lesson, day);
+                            }}
+                            teachers={[]}
+                        />
                     }
                 />
 
-                {/* Routing do formularza dodawania lekcji */}
+                {/* Formularz edytowania lekcji */}
                 <Route
-                    path="/add-lesson"
-                    element={<LessonForm onSubmit={handleAddLesson} teachers={teachers} />}
+                    path="/edit-lesson/:day/:lessonId"
+                    element={
+                        <LessonForm
+                            onSubmit={(lesson) => {
+                                const day = window.location.pathname.split('/')[2];
+                                handleEditLesson(day, lesson);
+                            }}
+                            teachers={[]}
+                            lesson={state
+                                .find((day) => day.day === window.location.pathname.split('/')[2])
+                                ?.lessons.find(
+                                    (lesson) => lesson.id === parseInt(window.location.pathname.split('/')[3])
+                                )}
+                        />
+                    }
                 />
             </Routes>
         </div>

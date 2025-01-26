@@ -4,7 +4,6 @@ export type Teacher = {
     lastName: string;
 };
 
-
 export type Lesson = {
     id: number;
     subject: string;
