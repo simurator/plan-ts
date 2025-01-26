@@ -1,12 +1,12 @@
+// SchoolScheduleApp.tsx
 import React, { useState, useReducer } from 'react';
 import DayHeader from './DayHeader';
 import LessonForm from './LessonForm';
 import LessonList from './LessonList';
-import TeacherList from './TeacherList';
-import { Lesson, SchoolDay, Teacher } from './Models';
+import { Lesson, Teacher, SchoolDay } from './Models';
 
 type SchoolScheduleAppProps = {
-    teachers: Teacher[]; // Dodano w³aœciwoœæ teachers
+    teachers: Teacher[];
 };
 
 type ScheduleAction =
@@ -40,9 +40,7 @@ const scheduleReducer = (state: SchoolDay[], action: ScheduleAction): SchoolDay[
                 day.day === action.payload.day
                     ? {
                         ...day,
-                        lessons: day.lessons.filter(lesson =>
-                            lesson.id !== action.payload.lessonId
-                        )
+                        lessons: day.lessons.filter(lesson => lesson.id !== action.payload.lessonId)
                     }
                     : day
             );
@@ -61,6 +59,7 @@ const SchoolScheduleApp: React.FC<SchoolScheduleAppProps> = ({ teachers }) => {
     ]);
 
     const [selectedDay, setSelectedDay] = useState<string>('Poniedzia³ek');
+    const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
 
     const handleAddLesson = (lesson: Lesson) => {
         dispatch({
@@ -69,8 +68,28 @@ const SchoolScheduleApp: React.FC<SchoolScheduleAppProps> = ({ teachers }) => {
         });
     };
 
+    const handleEditLesson = (lesson: Lesson) => {
+        setSelectedLesson(lesson);
+    };
+
+    const handleUpdateLesson = (updatedLesson: Lesson) => {
+        dispatch({
+            type: 'UPDATE_LESSON',
+            payload: { day: selectedDay, lesson: updatedLesson }
+        });
+        setSelectedLesson(null); // Close the form after updating
+    };
+
+    const handleDeleteLesson = (lessonId: number) => {
+        dispatch({
+            type: 'DELETE_LESSON',
+            payload: { day: selectedDay, lessonId }
+        });
+    };
+
     const handleDayChange = (day: string) => {
         setSelectedDay(day);
+        setSelectedLesson(null); // Reset selected lesson when switching days
     };
 
     return (
@@ -97,18 +116,23 @@ const SchoolScheduleApp: React.FC<SchoolScheduleAppProps> = ({ teachers }) => {
                 ))}
             </div>
 
-            {/* Formularz do dodawania lekcji */}
-            <LessonForm onSubmit={handleAddLesson} teachers={teachers} />
+            {/* Formularz do dodawania lekcji lub edytowania istniej¹cej */}
+            {selectedLesson ? (
+                <LessonForm
+                    onSubmit={handleUpdateLesson}
+                    teachers={teachers}
+                    lesson={selectedLesson}
+                />
+            ) : (
+                <LessonForm onSubmit={handleAddLesson} teachers={teachers} />
+            )}
 
             {/* Lista lekcji dla wybranego dnia */}
             <LessonList
                 lessons={state.find(day => day.day === selectedDay)?.lessons || []}
-                onEdit={() => { }}
-                onDelete={() => { }}
+                onEdit={handleEditLesson}
+                onDelete={handleDeleteLesson}
             />
-
-            {/* Lista nauczycieli */}
-            <TeacherList teachers={teachers} onSelect={(teacher) => console.log(teacher)} />
         </div>
     );
 };

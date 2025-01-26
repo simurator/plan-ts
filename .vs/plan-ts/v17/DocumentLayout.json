@@ -1,0 +1,105 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\\u0141iS\\source\\repos\\plan-ts\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\\u0141iS\\source\\repos\\plan-ts\\src\\components\\LessonList.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\LessonList.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\\u0141iS\\source\\repos\\plan-ts\\src\\components\\SchoolScheduleApp.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\SchoolScheduleApp.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\\u0141iS\\source\\repos\\plan-ts\\src\\components\\LessonForm.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\LessonForm.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\\u0141iS\\source\\repos\\plan-ts\\src\\components\\Models.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\Models.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\\u0141iS\\source\\repos\\plan-ts\\src\\App.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\App.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Models.tsx",
+              "DocumentMoniker": "C:\\Users\\\u0141iS\\source\\repos\\plan-ts\\src\\components\\Models.tsx",
+              "RelativeDocumentMoniker": "src\\components\\Models.tsx",
+              "ToolTip": "C:\\Users\\\u0141iS\\source\\repos\\plan-ts\\src\\components\\Models.tsx",
+              "RelativeToolTip": "src\\components\\Models.tsx",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-01-26T12:36:53.685Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "App.tsx",
+              "DocumentMoniker": "C:\\Users\\\u0141iS\\source\\repos\\plan-ts\\src\\App.tsx",
+              "RelativeDocumentMoniker": "src\\App.tsx",
+              "ToolTip": "C:\\Users\\\u0141iS\\source\\repos\\plan-ts\\src\\App.tsx",
+              "RelativeToolTip": "src\\App.tsx",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAIAAAAQAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-01-26T12:30:59.915Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "LessonForm.tsx",
+              "DocumentMoniker": "C:\\Users\\\u0141iS\\source\\repos\\plan-ts\\src\\components\\LessonForm.tsx",
+              "RelativeDocumentMoniker": "src\\components\\LessonForm.tsx",
+              "ToolTip": "C:\\Users\\\u0141iS\\source\\repos\\plan-ts\\src\\components\\LessonForm.tsx",
+              "RelativeToolTip": "src\\components\\LessonForm.tsx",
+              "ViewState": "AQIAAEEAAAAAAAAAAAAgwFkAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-01-26T12:28:57.323Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "LessonList.tsx",
+              "DocumentMoniker": "C:\\Users\\\u0141iS\\source\\repos\\plan-ts\\src\\components\\LessonList.tsx",
+              "RelativeDocumentMoniker": "src\\components\\LessonList.tsx",
+              "ToolTip": "C:\\Users\\\u0141iS\\source\\repos\\plan-ts\\src\\components\\LessonList.tsx",
+              "RelativeToolTip": "src\\components\\LessonList.tsx",
+              "ViewState": "AQIAACAAAAAAAAAAAAAiwDMAAAAOAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-01-26T12:28:28.61Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "SchoolScheduleApp.tsx",
+              "DocumentMoniker": "C:\\Users\\\u0141iS\\source\\repos\\plan-ts\\src\\components\\SchoolScheduleApp.tsx",
+              "RelativeDocumentMoniker": "src\\components\\SchoolScheduleApp.tsx",
+              "ToolTip": "C:\\Users\\\u0141iS\\source\\repos\\plan-ts\\src\\components\\SchoolScheduleApp.tsx",
+              "RelativeToolTip": "src\\components\\SchoolScheduleApp.tsx",
+              "ViewState": "AQIAADwAAAAAAAAAAAAAAEgAAAAGAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-01-26T12:27:00.813Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
