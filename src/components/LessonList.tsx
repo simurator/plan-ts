@@ -36,11 +36,11 @@ const LessonList: React.FC<LessonListProps> = ({
         {sortedLessons.map((lesson) => (
           <li key={lesson.id} className="lesson-item">
             <div className="lesson-info">
-              <span>{lesson.subject}</span> -
+              <span>{lesson.subject}</span> -{" "}
               <span>
                 {lesson.teacher.firstName} {lesson.teacher.lastName}
               </span>{" "}
-              -
+              --{" "}
               <span>
                 {lesson.startTime} - {lesson.endTime}
               </span>

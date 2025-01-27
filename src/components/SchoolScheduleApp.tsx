@@ -1,57 +1,114 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Lesson, SchoolDay } from "./Models";
 import { useNavigate, Routes, Route } from "react-router-dom";
 import LessonForm from "./LessonForm";
 import LessonList from "./LessonList";
 
-const initialState: SchoolDay[] = [
-  { day: "Monday", lessons: [] },
-  { day: "Tuesday", lessons: [] },
-  { day: "Wednesday", lessons: [] },
-  { day: "Thursday", lessons: [] },
-  { day: "Friday", lessons: [] },
-];
-
 const SchoolScheduleApp: React.FC = () => {
-  const [state, setState] = useState<SchoolDay[]>(initialState);
+  const [state, setState] = useState<SchoolDay[]>([]);
   const navigate = useNavigate();
 
-  const handleAddLesson = (newLesson: Lesson, day: string) => {
-    setState((prevState) =>
-      prevState.map((d) =>
-        d.day === day ? { ...d, lessons: [...d.lessons, newLesson] } : d
-      )
-    );
-    navigate(`/day/${day}`);
+  // Fetch schedule from the server
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/lessons");
+        const lessons = await response.json();
+
+        // Convert the flat lesson list to the SchoolDay structure
+        const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+        const groupedDays = days.map((day) => ({
+          day,
+          lessons: lessons.filter((lesson: Lesson) => lesson.day === day),
+        }));
+
+        setState(groupedDays);
+      } catch (error) {
+        console.error("Error fetching lessons:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleAddLesson = async (newLesson: Lesson, day: string) => {
+    try {
+      const response = await fetch("http://localhost:5000/api/lessons", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...newLesson, day }),
+      });
+
+      if (response.ok) {
+        const addedLesson = await response.json();
+        setState((prevState) =>
+          prevState.map((d) =>
+            d.day === day ? { ...d, lessons: [...d.lessons, addedLesson] } : d
+          )
+        );
+        navigate(`/day/${day}`);
+      }
+    } catch (error) {
+      console.error("Error adding lesson:", error);
+    }
   };
 
-  const handleEditLesson = (day: string, updatedLesson: Lesson) => {
-    setState((prevState) =>
-      prevState.map((d) =>
-        d.day === day
-          ? {
-              ...d,
-              lessons: d.lessons.map((lesson) =>
-                lesson.id === updatedLesson.id ? updatedLesson : lesson
-              ),
-            }
-          : d
-      )
-    );
-    navigate(`/day/${day}`);
+  const handleEditLesson = async (day: string, updatedLesson: Lesson) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/lessons/${updatedLesson.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedLesson),
+        }
+      );
+
+      if (response.ok) {
+        const editedLesson = await response.json();
+        setState((prevState) =>
+          prevState.map((d) =>
+            d.day === day
+              ? {
+                  ...d,
+                  lessons: d.lessons.map((lesson) =>
+                    lesson.id === editedLesson.id ? editedLesson : lesson
+                  ),
+                }
+              : d
+          )
+        );
+        navigate(`/day/${day}`);
+      }
+    } catch (error) {
+      console.error("Error editing lesson:", error);
+    }
   };
 
-  const handleDeleteLesson = (day: string, lessonId: number) => {
-    setState((prevState) =>
-      prevState.map((d) =>
-        d.day === day
-          ? {
-              ...d,
-              lessons: d.lessons.filter((lesson) => lesson.id !== lessonId),
-            }
-          : d
-      )
-    );
+  const handleDeleteLesson = async (day: string, lessonId: number) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/lessons/${lessonId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        setState((prevState) =>
+          prevState.map((d) =>
+            d.day === day
+              ? {
+                  ...d,
+                  lessons: d.lessons.filter((lesson) => lesson.id !== lessonId),
+                }
+              : d
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error deleting lesson:", error);
+    }
   };
 
   return (
