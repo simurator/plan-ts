@@ -19,6 +19,16 @@ const LessonList: React.FC<LessonListProps> = ({
     return a.startTime.localeCompare(b.startTime);
   });
 
+  const convertToAMPM = (time: string) => {
+    const [hours, minutes] = time.split(":").map(Number);
+    const period = hours >= 12 ? "PM" : "AM";
+    const adjustedHour = hours % 12 || 12; // Zamienia 0 na 12 (np. dla godziny 00:00).
+    const formattedTime = `${adjustedHour}:${
+      minutes < 10 ? "0" + minutes : minutes
+    } ${period}`;
+    return formattedTime;
+  };
+
   return (
     <div className="lesson-list-container">
       <div className="sort-controls">
@@ -42,7 +52,8 @@ const LessonList: React.FC<LessonListProps> = ({
               </span>{" "}
               --{" "}
               <span>
-                {lesson.startTime} - {lesson.endTime}
+                {convertToAMPM(lesson.startTime)} -{" "}
+                {convertToAMPM(lesson.endTime)}
               </span>
             </div>
             <div className="lesson-actions">
