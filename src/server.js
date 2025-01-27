@@ -7,24 +7,7 @@ const app = express();
 app.use(cors());
 app.use(json());
 
-let lessons = [
-  {
-    id: 1,
-    subject: "Math",
-    teacher: "Mr. Smith",
-    startTime: "09:00",
-    endTime: "10:00",
-    classroom: "101",
-  },
-  {
-    id: 2,
-    subject: "English",
-    teacher: "Mrs. Johnson",
-    startTime: "10:15",
-    endTime: "11:15",
-    classroom: "102",
-  },
-];
+let lessons = [];
 
 app.get("/api/lessons", (req, res) => {
   res.json(lessons);

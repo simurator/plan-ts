@@ -54,7 +54,8 @@ const LessonList: React.FC<LessonListProps> = ({
               <span>
                 {convertToAMPM(lesson.startTime)} -{" "}
                 {convertToAMPM(lesson.endTime)}
-              </span>
+              </span>{" "}
+              -- <span>Klasa: {lesson.classroom}</span> {/* Add classroom */}
             </div>
             <div className="lesson-actions">
               <button onClick={() => onEdit(lesson)} className="edit-btn">
