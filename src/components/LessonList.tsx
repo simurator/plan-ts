@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Lesson } from "./Models";
+import LessonInfo from "./LessonInfo"; // Import the new reusable component
 
 type LessonListProps = {
   lessons: Lesson[];
@@ -12,22 +13,35 @@ const LessonList: React.FC<LessonListProps> = ({
   onEdit,
   onDelete,
 }) => {
-  const [sortMethod, setSortMethod] = useState<"subject" | "time">("subject");
+  const [sortMethod, setSortMethod] = useState<"subject" | "time" | "teacher">(
+    "subject"
+  );
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+
+  const toggleSortDirection = () => {
+    setSortDirection((prevDirection) =>
+      prevDirection === "asc" ? "desc" : "asc"
+    );
+  };
 
   const sortedLessons = [...lessons].sort((a, b) => {
-    if (sortMethod === "subject") return a.subject.localeCompare(b.subject);
-    return a.startTime.localeCompare(b.startTime);
-  });
+    let comparison = 0;
 
-  const convertToAMPM = (time: string) => {
-    const [hours, minutes] = time.split(":").map(Number);
-    const period = hours >= 12 ? "PM" : "AM";
-    const adjustedHour = hours % 12 || 12; // Zamienia 0 na 12 (np. dla godziny 00:00).
-    const formattedTime = `${adjustedHour}:${
-      minutes < 10 ? "0" + minutes : minutes
-    } ${period}`;
-    return formattedTime;
-  };
+    // Sorting based on the selected method
+    if (sortMethod === "subject") {
+      comparison = a.subject.localeCompare(b.subject);
+    } else if (sortMethod === "time") {
+      comparison = a.startTime.localeCompare(b.startTime);
+    } else if (sortMethod === "teacher") {
+      // Sorting by teacher's full name (firstName + lastName)
+      const teacherA = `${a.teacher.firstName} ${a.teacher.lastName}`;
+      const teacherB = `${b.teacher.firstName} ${b.teacher.lastName}`;
+      comparison = teacherA.localeCompare(teacherB);
+    }
+
+    // Reverse the order if the direction is descending
+    return sortDirection === "asc" ? comparison : -comparison;
+  });
 
   return (
     <div className="lesson-list-container">
@@ -35,28 +49,31 @@ const LessonList: React.FC<LessonListProps> = ({
         <label>Sortuj według: </label>
         <select
           value={sortMethod}
-          onChange={(e) => setSortMethod(e.target.value as "subject" | "time")}
+          onChange={(e) =>
+            setSortMethod(e.target.value as "subject" | "time" | "teacher")
+          }
           className="sort-select"
         >
           <option value="subject">Przedmiot</option>
           <option value="time">Godzina</option>
+          <option value="teacher">Nauczyciel</option> {/* New sorting option */}
         </select>
+
+        {/* Sorting direction toggle */}
+        <button
+          onClick={toggleSortDirection}
+          className={`sort-direction-btn ${
+            sortDirection === "asc" ? "asc" : "desc"
+          }`}
+        >
+          {sortDirection === "asc" ? "↑" : "↓"}
+        </button>
       </div>
+
       <ul className="lesson-list">
         {sortedLessons.map((lesson) => (
           <li key={lesson.id} className="lesson-item">
-            <div className="lesson-info">
-              <span>{lesson.subject}</span> -{" "}
-              <span>
-                {lesson.teacher.firstName} {lesson.teacher.lastName}
-              </span>{" "}
-              --{" "}
-              <span>
-                {convertToAMPM(lesson.startTime)} -{" "}
-                {convertToAMPM(lesson.endTime)}
-              </span>{" "}
-              -- <span>{lesson.classroom}</span> {/* Add classroom */}
-            </div>
+            <LessonInfo lesson={lesson} />
             <div className="lesson-actions">
               <button onClick={() => onEdit(lesson)} className="edit-btn">
                 Edytuj

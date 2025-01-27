@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Lesson, Teacher } from "./Models";
 import { useNavigate } from "react-router-dom";
+import InputField from "./InputField"; // Import the new reusable component
 
 type LessonFormProps = {
   onSubmit: (lesson: Lesson) => void;
@@ -78,51 +79,38 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, lesson }) => {
   return (
     <form onSubmit={handleSubmit} className="lesson-form">
       <h2>{lesson ? "Edytuj Lekcje" : "Dodaj Lekcje"}</h2>
-      <div className="form-group">
-        <label>Przedmiot:</label>
-        <input
-          type="text"
-          value={subject}
-          onChange={(e) => setSubject(e.target.value)}
-          className="input-field"
-        />
-      </div>
-      <div className="form-group">
-        <label>Nauczyciel:</label>
-        <input
-          type="text"
-          value={teacherName}
-          onChange={(e) => setTeacherName(e.target.value)}
-          className="input-field"
-        />
-      </div>
-      <div className="form-group">
-        <label>Godzina Rozpoczęcia:</label>
-        <input
-          type="time"
-          value={startTime}
-          onChange={(e) => setStartTime(e.target.value)}
-          className="input-field"
-        />
-      </div>
-      <div className="form-group">
-        <label>Godzina Zakończenia:</label>
-        <input
-          type="time"
-          value={endTime}
-          onChange={(e) => setEndTime(e.target.value)}
-          className="input-field"
-        />
-      </div>
-      <div className="form-group">
-        <label>Klasa:</label>
-        <input
-          type="text"
-          value={classroom}
-          onChange={(e) => setClassroom(e.target.value)}
-          className="input-field"
-        />
-      </div>
+
+      <InputField
+        label="Przedmiot"
+        value={subject}
+        onChange={(e) => setSubject(e.target.value)}
+        type="text"
+      />
+      <InputField
+        label="Nauczyciel"
+        value={teacherName}
+        onChange={(e) => setTeacherName(e.target.value)}
+        type="text"
+      />
+      <InputField
+        label="Godzina Rozpoczęcia"
+        value={startTime}
+        onChange={(e) => setStartTime(e.target.value)}
+        type="time"
+      />
+      <InputField
+        label="Godzina Zakończenia"
+        value={endTime}
+        onChange={(e) => setEndTime(e.target.value)}
+        type="time"
+      />
+      <InputField
+        label="Klasa"
+        value={classroom}
+        onChange={(e) => setClassroom(e.target.value)}
+        type="text"
+      />
+
       <div className="form-actions">
         <button type="submit" className="submit-btn">
           Zapisz

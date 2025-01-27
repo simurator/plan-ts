@@ -209,3 +209,24 @@ h2 {
 .day-actions {
   margin-top: 20px;
 }
+
+.sort-direction-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0 10px;
+}
+
+.sort-direction-btn.asc {
+  color: green;
+}
+
+.sort-direction-btn.desc {
+  color: red;
+}
+
+.sort-controls {
+  display: flex;
+  align-items: center;
+}
