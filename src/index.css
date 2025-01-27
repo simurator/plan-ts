@@ -66,3 +66,146 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.lesson-form {
+  width: 400px;
+  margin: 0 auto;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background-color: #45a049;
+}
+
+.lesson-list-container {
+  width: 600px;
+  margin: 0 auto;
+}
+
+.sort-controls {
+  margin-bottom: 20px;
+}
+
+.sort-select {
+  padding: 8px;
+  margin-left: 10px;
+}
+
+.lesson-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.lesson-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.lesson-info {
+  font-weight: bold;
+}
+
+.lesson-actions button {
+  margin-left: 10px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+}
+
+.delete-btn {
+  background-color: #f44336;
+  color: white;
+  border: none;
+}
+
+.edit-btn:hover {
+  background-color: #45a049;
+}
+
+.delete-btn:hover {
+  background-color: #d32f2f;
+}
+
+.schedule-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.day-list {
+  margin-top: 20px;
+}
+
+.day-item {
+  margin-bottom: 15px;
+}
+
+h2 {
+  font-size: 24px;
+}
+
+.view-btn,
+.add-btn,
+.back-btn {
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.view-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.add-btn {
+  background-color: #008cba;
+  color: white;
+}
+
+.back-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.view-btn:hover,
+.add-btn:hover,
+.back-btn:hover {
+  opacity: 0.8;
+}
+
+.day-details {
+  margin-top: 30px;
+}
+
+.day-actions {
+  margin-top: 20px;
+}

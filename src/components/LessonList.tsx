@@ -20,22 +20,42 @@ const LessonList: React.FC<LessonListProps> = ({
   });
 
   return (
-    <div>
-      <label>Sortuj według: </label>
-      <select
-        value={sortMethod}
-        onChange={(e) => setSortMethod(e.target.value as "subject" | "time")}
-      >
-        <option value="subject">Przedmiot</option>
-        <option value="time">Godzina</option>
-      </select>
-      <ul>
+    <div className="lesson-list-container">
+      <div className="sort-controls">
+        <label>Sortuj według: </label>
+        <select
+          value={sortMethod}
+          onChange={(e) => setSortMethod(e.target.value as "subject" | "time")}
+          className="sort-select"
+        >
+          <option value="subject">Przedmiot</option>
+          <option value="time">Godzina</option>
+        </select>
+      </div>
+      <ul className="lesson-list">
         {sortedLessons.map((lesson) => (
-          <li key={lesson.id}>
-            {lesson.subject} - {lesson.teacher.firstName}{" "}
-            {lesson.teacher.lastName} - {lesson.startTime}-{lesson.endTime}
-            <button onClick={() => onEdit(lesson)}>Edytuj</button>
-            <button onClick={() => onDelete(lesson.id)}>Usuń</button>
+          <li key={lesson.id} className="lesson-item">
+            <div className="lesson-info">
+              <span>{lesson.subject}</span> -
+              <span>
+                {lesson.teacher.firstName} {lesson.teacher.lastName}
+              </span>{" "}
+              -
+              <span>
+                {lesson.startTime} - {lesson.endTime}
+              </span>
+            </div>
+            <div className="lesson-actions">
+              <button onClick={() => onEdit(lesson)} className="edit-btn">
+                Edytuj
+              </button>
+              <button
+                onClick={() => onDelete(lesson.id)}
+                className="delete-btn"
+              >
+                Usuń
+              </button>
+            </div>
           </li>
         ))}
       </ul>

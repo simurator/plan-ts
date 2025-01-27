@@ -55,21 +55,27 @@ const SchoolScheduleApp: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="schedule-container">
       <h1>Plan Lekcji</h1>
       <Routes>
         {/* Strona główna - lista dni */}
         <Route
           path="/"
           element={
-            <div>
+            <div className="day-list">
               {state.map((day) => (
-                <div key={day.day}>
+                <div key={day.day} className="day-item">
                   <h2>{day.day}</h2>
-                  <button onClick={() => navigate(`/day/${day.day}`)}>
+                  <button
+                    onClick={() => navigate(`/day/${day.day}`)}
+                    className="view-btn"
+                  >
                     Pokaż Lekcje
                   </button>
-                  <button onClick={() => navigate(`/add-lesson/${day.day}`)}>
+                  <button
+                    onClick={() => navigate(`/add-lesson/${day.day}`)}
+                    className="add-btn"
+                  >
                     Dodaj Lekcje
                   </button>
                 </div>
@@ -84,7 +90,7 @@ const SchoolScheduleApp: React.FC = () => {
             key={day.day}
             path={`/day/${day.day}`}
             element={
-              <div>
+              <div className="day-details">
                 <h2>{day.day}</h2>
                 <LessonList
                   lessons={day.lessons}
@@ -93,10 +99,17 @@ const SchoolScheduleApp: React.FC = () => {
                   }
                   onDelete={(lessonId) => handleDeleteLesson(day.day, lessonId)}
                 />
-                <button onClick={() => navigate(`/add-lesson/${day.day}`)}>
-                  Dodaj Lekcje
-                </button>
-                <button onClick={() => navigate("/")}>Powrót do planu</button>
+                <div className="day-actions">
+                  <button
+                    onClick={() => navigate(`/add-lesson/${day.day}`)}
+                    className="add-btn"
+                  >
+                    Dodaj Lekcje
+                  </button>
+                  <button onClick={() => navigate("/")} className="back-btn">
+                    Powrót do planu
+                  </button>
+                </div>
               </div>
             }
           />
