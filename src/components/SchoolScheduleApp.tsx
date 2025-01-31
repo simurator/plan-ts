@@ -3,19 +3,21 @@ import { Lesson, SchoolDay } from "./Models";
 import { useNavigate, Routes, Route } from "react-router-dom";
 import LessonForm from "./LessonForm";
 import LessonList from "./LessonList";
+import {
+  getLessons,
+  addLesson,
+  updateLesson,
+  deleteLesson,
+} from "./LessonService";
 
 const SchoolScheduleApp: React.FC = () => {
   const [state, setState] = useState<SchoolDay[]>([]);
   const navigate = useNavigate();
 
-  // Fetch schedule from the server
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/lessons");
-        const lessons = await response.json();
-
-        // Convert the flat lesson list to the SchoolDay structure
+        const lessons = await getLessons();
         const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
         const groupedDays = days.map((day) => ({
           day,
@@ -33,21 +35,13 @@ const SchoolScheduleApp: React.FC = () => {
 
   const handleAddLesson = async (newLesson: Lesson, day: string) => {
     try {
-      const response = await fetch("http://localhost:5000/api/lessons", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...newLesson, day }),
-      });
-
-      if (response.ok) {
-        const addedLesson = await response.json();
-        setState((prevState) =>
-          prevState.map((d) =>
-            d.day === day ? { ...d, lessons: [...d.lessons, addedLesson] } : d
-          )
-        );
-        navigate(`/day/${day}`);
-      }
+      const addedLesson = await addLesson({ ...newLesson, day });
+      setState((prevState) =>
+        prevState.map((d) =>
+          d.day === day ? { ...d, lessons: [...d.lessons, addedLesson] } : d
+        )
+      );
+      navigate(`/day/${day}`);
     } catch (error) {
       console.error("Error adding lesson:", error);
     }
@@ -55,31 +49,20 @@ const SchoolScheduleApp: React.FC = () => {
 
   const handleEditLesson = async (day: string, updatedLesson: Lesson) => {
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/lessons/${updatedLesson.id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedLesson),
-        }
+      const editedLesson = await updateLesson(updatedLesson.id, updatedLesson);
+      setState((prevState) =>
+        prevState.map((d) =>
+          d.day === day
+            ? {
+                ...d,
+                lessons: d.lessons.map((lesson) =>
+                  lesson.id === editedLesson.id ? editedLesson : lesson
+                ),
+              }
+            : d
+        )
       );
-
-      if (response.ok) {
-        const editedLesson = await response.json();
-        setState((prevState) =>
-          prevState.map((d) =>
-            d.day === day
-              ? {
-                  ...d,
-                  lessons: d.lessons.map((lesson) =>
-                    lesson.id === editedLesson.id ? editedLesson : lesson
-                  ),
-                }
-              : d
-          )
-        );
-        navigate(`/day/${day}`);
-      }
+      navigate(`/day/${day}`);
     } catch (error) {
       console.error("Error editing lesson:", error);
     }
@@ -87,14 +70,8 @@ const SchoolScheduleApp: React.FC = () => {
 
   const handleDeleteLesson = async (day: string, lessonId: number) => {
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/lessons/${lessonId}`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      if (response.ok) {
+      const isDeleted = await deleteLesson(lessonId);
+      if (isDeleted) {
         setState((prevState) =>
           prevState.map((d) =>
             d.day === day
@@ -115,7 +92,6 @@ const SchoolScheduleApp: React.FC = () => {
     <div className="schedule-container">
       <h1>Plan Lekcji</h1>
       <Routes>
-        {/* Strona główna - lista dni */}
         <Route
           path="/"
           element={
@@ -140,8 +116,6 @@ const SchoolScheduleApp: React.FC = () => {
             </div>
           }
         />
-
-        {/* Widok dla każdego dnia */}
         {state.map((day) => (
           <Route
             key={day.day}
@@ -171,22 +145,18 @@ const SchoolScheduleApp: React.FC = () => {
             }
           />
         ))}
-
-        {/* Formularz dodawania lekcji */}
         <Route
           path="/add-lesson/:day"
           element={
             <LessonForm
               onSubmit={(lesson) => {
-                const day = window.location.pathname.split("/")[2]; // Dzień z URL
+                const day = window.location.pathname.split("/")[2];
                 handleAddLesson(lesson, day);
               }}
               teachers={[]}
             />
           }
         />
-
-        {/* Formularz edytowania lekcji */}
         <Route
           path="/edit-lesson/:day/:lessonId"
           element={
