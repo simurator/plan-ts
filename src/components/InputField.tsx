@@ -5,6 +5,7 @@ type InputFieldProps = {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type: "text" | "time";
+  error?: string; // Dodane pole na komunikaty błędów
 };
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -12,6 +13,7 @@ const InputField: React.FC<InputFieldProps> = ({
   value,
   onChange,
   type,
+  error,
 }) => {
   return (
     <div className="form-group">
@@ -20,9 +22,11 @@ const InputField: React.FC<InputFieldProps> = ({
         type={type}
         value={value}
         onChange={onChange}
-        className="input-field"
+        className={`input-field ${error ? "input-error" : ""}`} // Dodana klasa błędu
         required
       />
+      {error && <span className="error-message">{error}</span>}{" "}
+      {/* Wyświetlanie błędu */}
     </div>
   );
 };

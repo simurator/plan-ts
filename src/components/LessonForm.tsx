@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Lesson, Teacher } from "./Models";
 import { useNavigate } from "react-router-dom";
-import InputField from "./InputField"; // Import the new reusable component
+import InputField from "./InputField"; // Importowanie komponentu InputField
 
 type LessonFormProps = {
   onSubmit: (lesson: Lesson) => void;
@@ -20,6 +20,7 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, lesson }) => {
   const [startTime, setStartTime] = useState<string>(lesson?.startTime || "");
   const [endTime, setEndTime] = useState<string>(lesson?.endTime || "");
   const [classroom, setClassroom] = useState<string>(lesson?.classroom || "");
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     if (lesson) {
@@ -32,19 +33,31 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, lesson }) => {
   }, [lesson]);
 
   const validateForm = () => {
-    if (!subject || !teacherName || !startTime || !endTime || !classroom) {
-      alert("Wszystkie pola muszą być wypełnione.");
-      return false;
+    let newErrors: { [key: string]: string } = {};
+
+    if (!subject.trim()) newErrors.subject = "Przedmiot jest wymagany.";
+    if (!teacherName.trim()) {
+      newErrors.teacherName = "Imię i nazwisko nauczyciela są wymagane.";
+    } else if (teacherName.trim().split(" ").length < 2) {
+      newErrors.teacherName = "Podaj pełne imię i nazwisko nauczyciela.";
     }
 
-    if (startTime >= endTime) {
-      alert(
-        "Godzina rozpoczęcia musi być wcześniejsza niż godzina zakończenia."
-      );
-      return false;
+    if (!startTime) newErrors.startTime = "Godzina rozpoczęcia jest wymagana.";
+    if (!endTime) newErrors.endTime = "Godzina zakończenia jest wymagana.";
+
+    if (startTime && endTime && startTime >= endTime) {
+      newErrors.time =
+        "Godzina rozpoczęcia musi być wcześniejsza niż zakończenia.";
     }
 
-    return true;
+    if (!classroom.trim()) {
+      newErrors.classroom = "Klasa jest wymagana.";
+    } else if (classroom.trim().length > 10) {
+      newErrors.classroom = "Nazwa klasy może mieć maksymalnie 10 znaków.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -85,30 +98,35 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, lesson }) => {
         value={subject}
         onChange={(e) => setSubject(e.target.value)}
         type="text"
+        error={errors.subject}
       />
       <InputField
         label="Nauczyciel"
         value={teacherName}
         onChange={(e) => setTeacherName(e.target.value)}
         type="text"
+        error={errors.teacherName}
       />
       <InputField
         label="Godzina Rozpoczęcia"
         value={startTime}
         onChange={(e) => setStartTime(e.target.value)}
         type="time"
+        error={errors.startTime || errors.time}
       />
       <InputField
         label="Godzina Zakończenia"
         value={endTime}
         onChange={(e) => setEndTime(e.target.value)}
         type="time"
+        error={errors.endTime || errors.time}
       />
       <InputField
         label="Klasa"
         value={classroom}
         onChange={(e) => setClassroom(e.target.value)}
         type="text"
+        error={errors.classroom}
       />
 
       <div className="form-actions">
