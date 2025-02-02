@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Lesson, Teacher } from "./Models";
 import { useNavigate } from "react-router-dom";
-import InputField from "./InputField"; // Importowanie komponentu InputField
+import InputField from "./InputField";
 
 type LessonFormProps = {
   onSubmit: (lesson: Lesson) => void;
@@ -34,26 +34,48 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, lesson }) => {
 
   const validateForm = () => {
     let newErrors: { [key: string]: string } = {};
+    const containsNumber = (text: string) => /\d/.test(text);
 
-    if (!subject.trim()) newErrors.subject = "Przedmiot jest wymagany.";
+    // Walidacja przedmiotu
+    if (!subject.trim()) {
+      newErrors.subject = "Przedmiot jest wymagany.";
+    } else if (containsNumber(subject)) {
+      newErrors.subject = "Przedmiot nie może zawierać cyfr.";
+    } else if (subject.length > 25) {
+      newErrors.subject = "Przedmiot może mieć maksymalnie 25 znaków.";
+    }
+
+    // Walidacja nauczyciela
     if (!teacherName.trim()) {
       newErrors.teacherName = "Imię i nazwisko nauczyciela są wymagane.";
     } else if (teacherName.trim().split(" ").length < 2) {
       newErrors.teacherName = "Podaj pełne imię i nazwisko nauczyciela.";
+    } else if (containsNumber(teacherName)) {
+      newErrors.teacherName =
+        "Imię i nazwisko nauczyciela nie mogą zawierać cyfr.";
+    } else if (teacherName.length > 40) {
+      newErrors.teacherName =
+        "Imię i nazwisko mogą mieć maksymalnie 40 znaków.";
     }
 
+    // Walidacja godzin
     if (!startTime) newErrors.startTime = "Godzina rozpoczęcia jest wymagana.";
     if (!endTime) newErrors.endTime = "Godzina zakończenia jest wymagana.";
-
     if (startTime && endTime && startTime >= endTime) {
       newErrors.time =
         "Godzina rozpoczęcia musi być wcześniejsza niż zakończenia.";
     }
 
+    // Walidacja klasy
     if (!classroom.trim()) {
       newErrors.classroom = "Klasa jest wymagana.";
-    } else if (classroom.trim().length > 10) {
-      newErrors.classroom = "Nazwa klasy może mieć maksymalnie 10 znaków.";
+    } else if (!/^\d+$/.test(classroom.trim())) {
+      newErrors.classroom = "Klasa musi być liczbą całkowitą.";
+    } else {
+      const classroomNumber = parseInt(classroom.trim(), 10);
+      if (classroomNumber < 1 || classroomNumber > 999) {
+        newErrors.classroom = "Klasa musi być liczbą od 1 do 999.";
+      }
     }
 
     setErrors(newErrors);
@@ -62,10 +84,7 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, lesson }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     const teacher: Teacher = {
       id: Date.now(),
@@ -86,7 +105,7 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, lesson }) => {
   };
 
   const handleGoBack = () => {
-    navigate("/"); // Powrót do planu lekcji (strona główna)
+    navigate("/");
   };
 
   return (
