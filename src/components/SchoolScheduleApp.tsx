@@ -1,93 +1,23 @@
-import { useState, useEffect } from "react";
-import { Lesson, SchoolDay } from "./Models";
-import { useNavigate, Routes, Route } from "react-router-dom";
+import { SchoolDay, Lesson } from "./Models";
+import { Routes, Route } from "react-router-dom";
 import LessonForm from "./LessonForm";
 import LessonList from "./LessonList";
-import {
-  getLessons,
-  addLesson,
-  updateLesson,
-  deleteLesson,
-} from "./LessonService";
 
-const SchoolScheduleApp: React.FC = () => {
-  const [state, setState] = useState<SchoolDay[]>([]);
-  const navigate = useNavigate();
+interface Props {
+  schedule: SchoolDay[];
+  onAddLesson: (lesson: Lesson, day: string) => void;
+  onEditLesson: (day: string, lesson: Lesson) => void;
+  onDeleteLesson: (day: string, lessonId: number) => void;
+  onNavigate: (path: string) => void;
+}
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const lessons = await getLessons();
-        const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-        const groupedDays = days.map((day) => ({
-          day,
-          lessons: lessons.filter((lesson: Lesson) => lesson.day === day),
-        }));
-
-        setState(groupedDays);
-      } catch (error) {
-        console.error("Error fetching lessons:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const handleAddLesson = async (newLesson: Lesson, day: string) => {
-    try {
-      const addedLesson = await addLesson({ ...newLesson, day });
-      setState((prevState) =>
-        prevState.map((d) =>
-          d.day === day ? { ...d, lessons: [...d.lessons, addedLesson] } : d
-        )
-      );
-      navigate(`/day/${day}`);
-    } catch (error) {
-      console.error("Error adding lesson:", error);
-    }
-  };
-
-  const handleEditLesson = async (day: string, updatedLesson: Lesson) => {
-    try {
-      const editedLesson = await updateLesson(updatedLesson.id, updatedLesson);
-      setState((prevState) =>
-        prevState.map((d) =>
-          d.day === day
-            ? {
-                ...d,
-                lessons: d.lessons.map((lesson) =>
-                  lesson.id === editedLesson.id ? editedLesson : lesson
-                ),
-              }
-            : d
-        )
-      );
-      navigate(`/day/${day}`);
-    } catch (error) {
-      console.error("Error editing lesson:", error);
-    }
-  };
-
-  const handleDeleteLesson = async (day: string, lessonId: number) => {
-    try {
-      const isDeleted = await deleteLesson(lessonId);
-      if (isDeleted) {
-        setState((prevState) =>
-          prevState.map((d) =>
-            d.day === day
-              ? {
-                  ...d,
-                  lessons: d.lessons.filter((lesson) => lesson.id !== lessonId),
-                }
-              : d
-          )
-        );
-      }
-    } catch (error) {
-      console.error("Error deleting lesson:", error);
-    }
-  };
-
+const SchoolScheduleApp: React.FC<Props> = ({
+  schedule,
+  onAddLesson,
+  onEditLesson,
+  onDeleteLesson,
+  onNavigate,
+}) => {
   return (
     <div className="schedule-container">
       <h1>Plan Lekcji</h1>
@@ -96,17 +26,17 @@ const SchoolScheduleApp: React.FC = () => {
           path="/"
           element={
             <div className="day-list">
-              {state.map((day) => (
+              {schedule.map((day) => (
                 <div key={day.day} className="day-item">
                   <h2>{day.day}</h2>
                   <button
-                    onClick={() => navigate(`/day/${day.day}`)}
+                    onClick={() => onNavigate(`/day/${day.day}`)}
                     className="view-btn"
                   >
                     Pokaż Lekcje
                   </button>
                   <button
-                    onClick={() => navigate(`/add-lesson/${day.day}`)}
+                    onClick={() => onNavigate(`/add-lesson/${day.day}`)}
                     className="add-btn"
                   >
                     Dodaj Lekcje
@@ -116,7 +46,8 @@ const SchoolScheduleApp: React.FC = () => {
             </div>
           }
         />
-        {state.map((day) => (
+
+        {schedule.map((day) => (
           <Route
             key={day.day}
             path={`/day/${day.day}`}
@@ -126,18 +57,18 @@ const SchoolScheduleApp: React.FC = () => {
                 <LessonList
                   lessons={day.lessons}
                   onEdit={(lesson) =>
-                    navigate(`/edit-lesson/${day.day}/${lesson.id}`)
+                    onNavigate(`/edit-lesson/${day.day}/${lesson.id}`)
                   }
-                  onDelete={(lessonId) => handleDeleteLesson(day.day, lessonId)}
+                  onDelete={(lessonId) => onDeleteLesson(day.day, lessonId)}
                 />
                 <div className="day-actions">
                   <button
-                    onClick={() => navigate(`/add-lesson/${day.day}`)}
+                    onClick={() => onNavigate(`/add-lesson/${day.day}`)}
                     className="add-btn"
                   >
                     Dodaj Lekcje
                   </button>
-                  <button onClick={() => navigate("/")} className="back-btn">
+                  <button onClick={() => onNavigate("/")} className="back-btn">
                     Powrót do planu
                   </button>
                 </div>
@@ -145,31 +76,31 @@ const SchoolScheduleApp: React.FC = () => {
             }
           />
         ))}
+
         <Route
           path="/add-lesson/:day"
           element={
             <LessonForm
               onSubmit={(lesson) => {
                 const day = window.location.pathname.split("/")[2];
-                handleAddLesson(lesson, day);
+                onAddLesson(lesson, day);
               }}
               teachers={[]}
             />
           }
         />
+
         <Route
           path="/edit-lesson/:day/:lessonId"
           element={
             <LessonForm
               onSubmit={(lesson) => {
                 const day = window.location.pathname.split("/")[2];
-                handleEditLesson(day, lesson);
+                onEditLesson(day, lesson);
               }}
               teachers={[]}
-              lesson={state
-                .find(
-                  (day) => day.day === window.location.pathname.split("/")[2]
-                )
+              lesson={schedule
+                .find((d) => d.day === window.location.pathname.split("/")[2])
                 ?.lessons.find(
                   (lesson) =>
                     lesson.id ===

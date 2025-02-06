@@ -1,11 +1,11 @@
 import { BrowserRouter as Router } from "react-router-dom";
-import SchoolScheduleApp from "./components/SchoolScheduleApp";
+import SchoolScheduleContainer from "./components/SchoolScheduleContainer";
 
 function App() {
   return (
     <Router>
       <div style={{ fontFamily: "Arial, sans-serif", padding: "20px" }}>
-        <SchoolScheduleApp />
+        <SchoolScheduleContainer />
       </div>
     </Router>
   );

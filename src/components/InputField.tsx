@@ -23,7 +23,6 @@ const InputField: React.FC<InputFieldProps> = ({
         value={value}
         onChange={onChange}
         className={`input-field ${error ? "input-error" : ""}`} // Dodana klasa błędu
-        required
       />
       {error && <span className="error-message">{error}</span>}{" "}
       {/* Wyświetlanie błędu */}
